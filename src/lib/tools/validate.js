@@ -4,6 +4,7 @@ function isValidArn(arn, type) {
     'state-machine': /^arn:aws:states:.+:[0-9]+:stateMachine:.+$/,
     execution: /^arn:aws:states:.+:[0-9]+:execution:.+:.+$/,
     lambda: /^arn:aws:lambda:.+:[0-9]+:function:.+$/,
+    lambdaVariable: /^\${.*.Arn}$/,
     activity: /^arn:aws:states:.+:[0-9]+:activity:.+$/,
   };
   return arn.match(regexp[type]) !== null;

@@ -11,6 +11,8 @@ const { applyInputPath, applyResultPath, applyOutputPath } = require('../tools/p
 const store = require('../../store');
 const { actions, status, parameters } = require('../../constants');
 
+const { isValidArn } = require('../tools/validate');
+
 const LAMBDA = 'lambda';
 const ACTIVITY = 'activity';
 
@@ -27,9 +29,15 @@ class Task extends State {
     if (this.config.lambdaRegion) {
       lambdaConfig.region = this.config.lambdaRegion;
     }
+    let functionName;
+    if (isValidArn(this.arn, 'lambdaVariable')) {
+      functionName = this.arn.replace(/.Arn}$/, '').replace(/^\${/, '');
+    } else if (isValidArn(this.arn, 'lambda')) {
+      functionName = this.arn.replace(/^arn:aws:lambda:.+:[0-9]+:function:/, '');
+    }
     const lambda = new AWS.Lambda(lambdaConfig);
     const params = {
-      FunctionName: this.arn,
+      FunctionName: functionName || this.arn,
       Payload: JSON.stringify(this.input),
     };
     return lambda.invoke(params).promise();

@@ -112,6 +112,26 @@ describe('Test isValidArn function', () => {
     }
   });
 
+  it('should validate a lambda variable', () => {
+    try {
+      const arn = '${MyLambda.Arn}';
+      const valid = isValidArn(arn, 'lambdaVariable');
+      expect(valid).toBeTruthy();
+    } catch (e) {
+      expect(e).not.toBeDefined();
+    }
+  });
+
+  it('should invalidate a lambda variable', () => {
+    try {
+      const arn = 'MyLambda.Arn';
+      const valid = isValidArn(arn, 'lambdaVariable');
+      expect(valid).not.toBeTruthy();
+    } catch (e) {
+      expect(e).not.toBeDefined();
+    }
+  });
+
   it('should validate an activity arn', () => {
     try {
       const arn = 'arn:aws:states:my-region:123:activity:MyActivity';
